@@ -1,0 +1,134 @@
+import { useState, useEffect } from 'react';
+import { STAGES, BED1_ZONES, BED2_ZONES, VIZ_CROPS } from '../data/stageData';
+import { computeBedsAtDate } from '../utils/stageUtils';
+import BedPanel from './BedPanel';
+import styles from './BedVisualizer.module.css';
+
+const SEASON_LABELS = { year: 'Year-Round', spring: 'Spring', summer: 'Summer', fall: 'Fall' };
+const BADGE_CLASS = { year: styles.badgeYear, spring: styles.badgeSpring, summer: styles.badgeSummer, fall: styles.badgeFall };
+
+export default function BedVisualizer({ events, crops }) {
+  const [currentStage, setCurrentStage] = useState(0);
+  const [prevStage, setPrevStage] = useState(-1);
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= STAGES.length) return;
+    setPrevStage(currentStage);
+    setCurrentStage(idx);
+  }
+
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === 'ArrowLeft')  goTo(currentStage - 1);
+      if (e.key === 'ArrowRight') goTo(currentStage + 1);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [currentStage]);
+
+  const stage = STAGES[currentStage];
+  const prevStageData = prevStage >= 0 ? STAGES[prevStage] : null;
+
+  const { bed1, bed2 } = computeBedsAtDate(events, crops, stage.stageDate);
+  const prev = prevStageData
+    ? computeBedsAtDate(events, crops, prevStageData.stageDate)
+    : null;
+
+  return (
+    <div className={styles.vizRoot}>
+      {/* Header */}
+      <header className={styles.header}>
+        <div className={styles.headerSpacer} />
+        <div className={styles.headerCenter}>
+          <h1 className={styles.title}>2026 4236 Garden</h1>
+          <div className={styles.subtitle}>Zone 7b · Two Raised Beds, 33″ × 108″ · NE Orientation</div>
+          <div className={`${styles.seasonBadge} ${BADGE_CLASS[stage.season]}`}>
+            {SEASON_LABELS[stage.season] || stage.season}
+          </div>
+        </div>
+        <div className={styles.compass}>
+          <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="26" cy="26" r="24" stroke="#9b7055" strokeWidth="1.5" fill="rgba(245,237,224,0.6)"/>
+            <polygon points="26,4 29,26 26,22 23,26" fill="#3d2b1f"/>
+            <polygon points="26,48 29,26 26,30 23,26" fill="#9b7055"/>
+            <polygon points="4,26 26,23 22,26 26,29" fill="#9b7055"/>
+            <polygon points="48,26 26,23 30,26 26,29" fill="#9b7055"/>
+            <circle cx="26" cy="26" r="3" fill="#9b7055"/>
+            <text x="26" y="14" textAnchor="middle" fontSize="7" fill="#3d2b1f" fontFamily="serif" fontWeight="bold">N</text>
+            <text x="26" y="46" textAnchor="middle" fontSize="6" fill="#9b7055" fontFamily="serif">S</text>
+            <text x="8"  y="29" textAnchor="middle" fontSize="6" fill="#9b7055" fontFamily="serif">W</text>
+            <text x="44" y="29" textAnchor="middle" fontSize="6" fill="#9b7055" fontFamily="serif">E</text>
+          </svg>
+          <div className={styles.compassLabel}>NE facing</div>
+        </div>
+      </header>
+
+      <div className={styles.divider}>— ✦ —</div>
+
+      {/* Stage Navigator */}
+      <div className={styles.stageNav}>
+        <button
+          className={styles.navBtn}
+          onClick={() => goTo(currentStage - 1)}
+          disabled={currentStage === 0}
+          title="Previous stage (←)"
+        >←</button>
+        <div className={styles.stageInfo}>
+          <div className={styles.stageLabel}>{stage.label}</div>
+          <div className={styles.stageDate}>{stage.dateDisplay}</div>
+        </div>
+        <button
+          className={styles.navBtn}
+          onClick={() => goTo(currentStage + 1)}
+          disabled={currentStage === STAGES.length - 1}
+          title="Next stage (→)"
+        >→</button>
+      </div>
+
+      {/* Dots */}
+      <div className={styles.dotsRow}>
+        {STAGES.map((s, i) => (
+          <span
+            key={i}
+            className={`${styles.stageDot} ${i === currentStage ? styles.active : ''}`}
+            onClick={() => goTo(i)}
+            title={`${s.label} — ${s.dateDisplay}`}
+          />
+        ))}
+      </div>
+
+      <p className={styles.stageNotes}>{stage.notes}</p>
+
+      {/* Beds */}
+      <div className={styles.bedsOuter}>
+        <BedPanel
+          bedNum={2}
+          zones={BED2_ZONES}
+          bedData={bed2}
+          prevBedData={prev?.bed2}
+          sunTag="Full sun all day"
+        />
+        <BedPanel
+          bedNum={1}
+          zones={BED1_ZONES}
+          bedData={bed1}
+          prevBedData={prev?.bed1}
+          sunTag="SW tree (PM shade on south end)"
+        />
+      </div>
+
+      {/* Legend */}
+      <div className={styles.legend}>
+        <div className={styles.legendTitle}>Crop Legend</div>
+        <div className={styles.legendGrid}>
+          {Object.entries(VIZ_CROPS).map(([key, c]) => (
+            <div key={key} className={styles.legendItem}>
+              <div className={styles.legendSwatch} style={{ background: c.color }} />
+              <span>{c.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

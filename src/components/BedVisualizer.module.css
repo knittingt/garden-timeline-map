@@ -1,0 +1,387 @@
+/* CSS custom properties scoped to the visualizer root */
+.vizRoot {
+  --parchment:      #f5ede0;
+  --parchment-dark: #e8d8c4;
+  --parchment-mid:  #eddfc8;
+  --soil:           #3d2b1f;
+  --soil-mid:       #6b4c3b;
+  --soil-light:     #9b7055;
+  --bed-bg:         #edf3e8;
+  --text-dark:      #2c1a0e;
+  --text-mid:       #5c3d2e;
+  --text-light:     #8b6050;
+
+  background: var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(139,100,60,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(100,80,40,0.05) 0%, transparent 55%),
+    repeating-linear-gradient(0deg, transparent, transparent 31px,
+      rgba(139,100,60,0.035) 31px, rgba(139,100,60,0.035) 32px);
+  font-family: 'EB Garamond', Georgia, serif;
+  color: var(--text-dark);
+  padding: 28px 20px 40px;
+  border-radius: 4px;
+}
+
+/* ─── HEADER ─── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.headerCenter { text-align: center; flex: 1; }
+
+.title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-style: italic;
+  color: var(--text-mid);
+  font-size: 1rem;
+  margin-top: 5px;
+  letter-spacing: 0.03em;
+}
+
+.seasonBadge {
+  display: inline-block;
+  padding: 3px 16px;
+  border-radius: 20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.07em;
+  margin-top: 9px;
+  text-transform: uppercase;
+  transition: background 0.3s, color 0.3s;
+}
+.badgeYear   { background: #e8d8c0; color: #5c3d2e; border: 1px solid #a07850; }
+.badgeSpring { background: #d4ecd5; color: #1a5c25; border: 1px solid #7ab87e; }
+.badgeSummer { background: #fff3c4; color: #b86000; border: 1px solid #e8a820; }
+.badgeFall   { background: #fde8d0; color: #8b3010; border: 1px solid #e08040; }
+
+/* ─── COMPASS ─── */
+.compass {
+  width: 64px;
+  flex-shrink: 0;
+  text-align: center;
+  margin-top: 6px;
+}
+.compass svg { width: 52px; height: 52px; opacity: 0.7; }
+.compassLabel {
+  font-size: 0.65rem;
+  color: var(--text-light);
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+  font-style: italic;
+}
+.headerSpacer { width: 64px; flex-shrink: 0; }
+
+/* ─── STAGE NAVIGATOR ─── */
+.stageNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--parchment-dark);
+  border: 1.5px solid var(--soil-mid);
+  border-radius: 10px;
+  padding: 13px 22px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(61,43,31,0.10);
+}
+
+.navBtn {
+  background: none;
+  border: 1.5px solid var(--soil-mid);
+  color: var(--soil);
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, opacity 0.15s;
+  flex-shrink: 0;
+}
+.navBtn:hover:not(:disabled) { background: rgba(61,43,31,0.10); }
+.navBtn:disabled { opacity: 0.28; cursor: default; }
+
+.stageInfo { text-align: center; min-width: 220px; }
+.stageLabel {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+.stageDate { font-size: 0.87rem; color: var(--text-mid); font-style: italic; margin-top: 2px; }
+
+.dotsRow {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+.stageDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid var(--soil-mid);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.stageDot:hover  { background: var(--soil-light); transform: scale(1.2); }
+.stageDot.active { background: var(--soil); border-color: var(--soil); transform: scale(1.15); }
+
+.stageNotes {
+  text-align: center;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  margin-bottom: 18px;
+  min-height: 1.3em;
+  line-height: 1.5;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── BEDS LAYOUT ─── */
+.bedsOuter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.bedWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.bedRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.dirNs {
+  font-size: 0.68rem;
+  color: var(--text-light);
+  letter-spacing: 0.12em;
+  font-style: italic;
+  user-select: none;
+}
+
+.bedTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  letter-spacing: 0.04em;
+}
+
+.sunTag {
+  font-size: 0.68rem;
+  color: var(--text-light);
+  font-style: italic;
+  text-align: center;
+  margin-top: 1px;
+}
+
+.bedColumn {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+  height: 210px;
+  border: 2.5px solid var(--soil);
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--bed-bg);
+  position: relative;
+  box-shadow: 3px 4px 12px rgba(61,43,31,0.15), inset 0 0 20px rgba(200,220,190,0.4);
+}
+
+/* ─── ZONE ─── */
+.zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 7px 8px;
+  border-right: 1.5px dashed rgba(61,43,31,0.22);
+  border-bottom: none;
+  overflow: hidden;
+}
+.zone:last-child { border-right: none; }
+
+.trellisZone {
+  background: linear-gradient(to right,
+    rgba(139,100,60,0.10) 0%,
+    rgba(200,220,190,0.15) 100%);
+  border-right-style: solid;
+  border-right-color: rgba(61,43,31,0.30);
+}
+
+.trellisBadge {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  font-size: 0.58rem;
+  color: var(--soil-light);
+  font-style: italic;
+  letter-spacing: 0.05em;
+  border: 1px dashed var(--soil-light);
+  padding: 1px 5px;
+  border-radius: 3px;
+  opacity: 0.8;
+}
+
+.zoneLabel {
+  font-size: 0.6rem;
+  letter-spacing: 0.09em;
+  color: var(--soil-light);
+  font-family: 'EB Garamond', serif;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── PLANT CHIPS ─── */
+.plantsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 22px;
+}
+
+.plantChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px 3px 7px;
+  border-radius: 12px;
+  font-size: 0.71rem;
+  font-family: 'EB Garamond', serif;
+  font-weight: 500;
+  color: rgba(255,255,255,0.93);
+  cursor: default;
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  white-space: nowrap;
+}
+.plantChip:hover {
+  transform: scale(1.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  z-index: 20;
+}
+.permanent::before {
+  content: '●';
+  font-size: 0.5rem;
+  opacity: 0.85;
+}
+
+@keyframes plantIn {
+  0%   { opacity: 0; transform: scale(0.55) translateY(4px); }
+  60%  { transform: scale(1.08) translateY(-1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.newPlant { animation: plantIn 0.42s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+/* Tooltip */
+.plantChip .tip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--soil);
+  color: var(--parchment);
+  font-size: 0.7rem;
+  line-height: 1.45;
+  padding: 7px 11px;
+  border-radius: 6px;
+  white-space: normal;
+  width: 200px;
+  text-align: left;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+}
+.plantChip .tip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--soil);
+}
+.plantChip:hover .tip { display: block; }
+
+/* ─── LEGEND ─── */
+.legend {
+  background: var(--parchment-mid);
+  border: 1px solid rgba(107,76,59,0.35);
+  border-radius: 9px;
+  padding: 16px 22px 18px;
+  box-shadow: inset 0 1px 3px rgba(139,100,60,0.08);
+}
+.legendTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 11px;
+  color: var(--text-mid);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.legendGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 18px;
+}
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  color: var(--text-dark);
+}
+.legendSwatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+
+/* ─── DIVIDER ─── */
+.divider {
+  text-align: center;
+  color: var(--soil-light);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  margin: 6px 0 16px;
+  opacity: 0.6;
+}
