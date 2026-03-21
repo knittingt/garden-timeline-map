@@ -7,7 +7,7 @@ import ExportPanel from './components/ExportPanel';
 import BedVisualizer from './components/BedVisualizer';
 
 const STORAGE_KEY = 'garden-planner-v1';
-const TABS = ['Timeline', 'Crops', 'Export', 'Beds'];
+const TABS = ['Beds', 'Timeline', 'Crops', 'Export'];
 
 function loadState() {
   try {
@@ -25,7 +25,7 @@ export default function App() {
   const initial = loadState();
   const [events, setEvents] = useState(initial?.events ?? EVENTS);
   const [crops] = useState(initial?.crops ?? CROPS);
-  const [tab, setTab] = useState('Timeline');
+  const [tab, setTab] = useState('Beds');
   const [editing, setEditing] = useState(null);
   const year = new Date().getFullYear();
 
