@@ -100,12 +100,23 @@ Only set "complete": true after ALL THREE phases are done:
     const data = await response.json();
     const content = data.content?.[0]?.text ?? '';
 
-    // Strip markdown fences if present
-    const cleaned = content.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    // Extract JSON — handle fenced blocks, leading prose, or bare JSON
+    let jsonStr = content.trim();
+    const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    if (fenceMatch) {
+      jsonStr = fenceMatch[1].trim();
+    } else {
+      // Try to find a raw JSON object anywhere in the response
+      const objStart = jsonStr.indexOf('{');
+      const objEnd = jsonStr.lastIndexOf('}');
+      if (objStart !== -1 && objEnd > objStart) {
+        jsonStr = jsonStr.slice(objStart, objEnd + 1);
+      }
+    }
 
     let parsed;
     try {
-      parsed = JSON.parse(cleaned);
+      parsed = JSON.parse(jsonStr);
     } catch {
       // Fallback: return plain reply without complete
       return res.status(200).json({ reply: content, complete: false, gardenInfo });

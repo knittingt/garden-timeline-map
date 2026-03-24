@@ -109,12 +109,22 @@ Please generate the complete garden plan JSON.`;
     const data = await response.json();
     const content = data.content?.[0]?.text ?? '';
 
-    // Strip markdown fences
-    const cleaned = content.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    // Extract JSON — handle fenced blocks, leading prose, or bare JSON
+    let jsonStr = content.trim();
+    const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    if (fenceMatch) {
+      jsonStr = fenceMatch[1].trim();
+    } else {
+      const objStart = jsonStr.indexOf('{');
+      const objEnd = jsonStr.lastIndexOf('}');
+      if (objStart !== -1 && objEnd > objStart) {
+        jsonStr = jsonStr.slice(objStart, objEnd + 1);
+      }
+    }
 
     let parsed;
     try {
-      parsed = JSON.parse(cleaned);
+      parsed = JSON.parse(jsonStr);
     } catch {
       return res.status(500).json({ error: 'Generation failed — could not parse response', raw: content });
     }
