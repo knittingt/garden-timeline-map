@@ -1,19 +1,37 @@
-import { PERMANENT_HERBS, CROP_ID_TO_VIZ_KEY, HARVEST_BUFFER } from '../data/stageData';
+import {
+  PERMANENT_HERBS as DEFAULT_HERBS,
+  CROP_ID_TO_VIZ_KEY as DEFAULT_VIZ_KEY,
+  HARVEST_BUFFER as DEFAULT_BUFFER,
+  BED1_ZONES,
+  BED2_ZONES,
+} from '../data/stageData';
 
 const MS_PER_DAY = 86400000;
 
 /**
  * Compute the bed1/bed2 contents for a given stage date by filtering
- * active EVENTS and mapping them to VIZ_CROPS keys and zone slots.
+ * active events and mapping them to vizCrops keys and zone slots.
  *
  * @param {Array} events - EVENTS array from seedData / state
  * @param {Array} crops  - CROPS array from seedData / state
  * @param {string|null} stageDate - ISO date string, or null for permanent-only
+ * @param {object} options - Optional overrides for dynamic/generated plans
  * @returns {{ bed1: object, bed2: object }}
  */
-export function computeBedsAtDate(events, crops, stageDate) {
-  const bed1 = { trellis: [], stripA: [], stripB: [], stripC: [] };
-  const bed2 = { strip1: [], strip2: [], strip3: [], strip4: [] };
+export function computeBedsAtDate(events, crops, stageDate, {
+  bed1Zones = BED1_ZONES,
+  bed2Zones = BED2_ZONES,
+  permanentHerbs = DEFAULT_HERBS,
+  cropIdToVizKey = DEFAULT_VIZ_KEY,
+  harvestBuffer = DEFAULT_BUFFER,
+} = {}) {
+  // Build zone containers dynamically from zone arrays
+  const bed1 = Object.fromEntries(bed1Zones.map(z => [z.id, []]));
+  const bed2 = bed2Zones ? Object.fromEntries(bed2Zones.map(z => [z.id, []])) : {};
+
+  // Legacy strip name → zone id mappings for backward compat with seed data
+  const legacyBed1Map = { trellis: 'trellis', A: 'stripA', B: 'stripB', C: 'stripC' };
+  const legacyBed2Map = { 1: 'strip1', 2: 'strip2', 3: 'strip3', 4: 'strip4' };
 
   if (stageDate !== null) {
     const stageDateMs = new Date(stageDate).getTime();
@@ -24,12 +42,12 @@ export function computeBedsAtDate(events, crops, stageDate) {
       if (!crop) continue;
 
       const sowMs = new Date(event.sowDate).getTime();
-      const buffer = HARVEST_BUFFER[event.cropId] ?? 14;
+      const buffer = harvestBuffer[event.cropId] ?? 14;
       const endMs = sowMs + (crop.daysToMaturity + buffer) * MS_PER_DAY;
 
       if (sowMs > stageDateMs || stageDateMs > endMs) continue;
 
-      const vizKey = CROP_ID_TO_VIZ_KEY[event.cropId] ?? event.cropId;
+      const vizKey = cropIdToVizKey[event.cropId] ?? event.cropId;
 
       let label;
       if (event.season === 'summer') {
@@ -41,29 +59,28 @@ export function computeBedsAtDate(events, crops, stageDate) {
       }
 
       const item = { crop: vizKey, label };
+      const strip = String(event.strip);
 
       if (event.bed === 1) {
-        const zone =
-          event.strip === 'trellis' ? 'trellis' :
-          event.strip === 'A'       ? 'stripA'  :
-          event.strip === 'B'       ? 'stripB'  :
-          event.strip === 'C'       ? 'stripC'  : null;
-        if (zone) bed1[zone].push(item);
+        // Use strip directly if it's a known zone id, otherwise try legacy mapping
+        const zoneId = strip in bed1 ? strip : (legacyBed1Map[strip] ?? null);
+        if (zoneId && bed1[zoneId]) bed1[zoneId].push(item);
       } else if (event.bed === 2) {
-        const zone =
-          event.strip === '1' ? 'strip1' :
-          event.strip === '2' ? 'strip2' :
-          event.strip === '3' ? 'strip3' :
-          event.strip === '4' ? 'strip4' : null;
-        if (zone) bed2[zone].push(item);
+        const zoneId = strip in bed2 ? strip : (legacyBed2Map[strip] ?? null);
+        if (zoneId && bed2[zoneId]) bed2[zoneId].push(item);
       }
     }
   }
 
-  // Merge permanent herbs (prepended so they always appear first)
-  bed1.trellis.unshift(...PERMANENT_HERBS.bed1.trellis);
-  bed2.strip1.unshift(...PERMANENT_HERBS.bed2.strip1);
-  bed2.strip2.unshift(...PERMANENT_HERBS.bed2.strip2);
+  // Merge permanent herbs dynamically
+  for (const [bedKey, zones] of Object.entries(permanentHerbs)) {
+    const bedContainer = bedKey === 'bed1' ? bed1 : bed2;
+    for (const [zoneId, herbs] of Object.entries(zones ?? {})) {
+      if (bedContainer[zoneId]) {
+        bedContainer[zoneId].unshift(...herbs);
+      }
+    }
+  }
 
   return { bed1, bed2 };
 }

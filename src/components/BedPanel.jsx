@@ -1,7 +1,7 @@
 import PlantChip from './PlantChip';
 import styles from './BedVisualizer.module.css';
 
-export default function BedPanel({ bedNum, zones, bedData, prevBedData, sunTag }) {
+export default function BedPanel({ bedNum, zones, bedData, prevBedData, sunTag, vizCrops }) {
   function getPrevLabels(zoneId) {
     if (!prevBedData) return new Set();
     return new Set((prevBedData[zoneId] || []).map(p => p.label));
@@ -26,7 +26,7 @@ export default function BedPanel({ bedNum, zones, bedData, prevBedData, sunTag }
                 <div className={styles.zoneLabel}>{zone.label}</div>
                 <div className={styles.plantsRow}>
                   {plants.map((plant, i) => (
-                    <PlantChip key={i} plant={plant} isNew={!prev.has(plant.label)} />
+                    <PlantChip key={i} plant={plant} isNew={!prev.has(plant.label)} vizCrops={vizCrops} />
                   ))}
                 </div>
               </div>

@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { VIZ_CROPS } from '../data/stageData';
+import { VIZ_CROPS as DEFAULT_VIZ_CROPS } from '../data/stageData';
 import styles from './BedVisualizer.module.css';
 
-export default function PlantChip({ plant, isNew }) {
-  const crop = VIZ_CROPS[plant.crop];
+export default function PlantChip({ plant, isNew, vizCrops }) {
+  const cropMap = vizCrops ?? DEFAULT_VIZ_CROPS;
+  const crop = cropMap[plant.crop] ?? DEFAULT_VIZ_CROPS[plant.crop];
   if (!crop) return null;
 
   const [tipPos, setTipPos] = useState(null);

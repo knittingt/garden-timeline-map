@@ -5,9 +5,10 @@ import CropList from './components/CropList';
 import CropForm from './components/CropForm';
 import ExportPanel from './components/ExportPanel';
 import BedVisualizer from './components/BedVisualizer';
+import SetupPage from './components/SetupPage';
 
 const STORAGE_KEY = 'garden-planner-v1';
-const TABS = ['Beds', 'Timeline', 'Crops', 'Export'];
+const TABS = ['Setup', 'Beds', 'Timeline', 'Crops', 'Export'];
 
 function loadState() {
   try {
@@ -17,21 +18,38 @@ function loadState() {
   return null;
 }
 
-function saveState(events, crops) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ events, crops }));
+function saveState(events, crops, generatedPlan) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ events, crops, generatedPlan }));
 }
 
 export default function App() {
   const initial = loadState();
   const [events, setEvents] = useState(initial?.events ?? EVENTS);
-  const [crops] = useState(initial?.crops ?? CROPS);
-  const [tab, setTab] = useState('Beds');
+  const [crops, setCrops] = useState(initial?.crops ?? CROPS);
+  const [generatedPlan, setGeneratedPlan] = useState(initial?.generatedPlan ?? null);
+  const [tab, setTab] = useState(generatedPlan ? 'Beds' : 'Setup');
   const [editing, setEditing] = useState(null);
   const year = new Date().getFullYear();
 
   useEffect(() => {
-    saveState(events, crops);
-  }, [events, crops]);
+    saveState(events, crops, generatedPlan);
+  }, [events, crops, generatedPlan]);
+
+  function handlePlanGenerated(transformed) {
+    setEvents(transformed.events);
+    setCrops(transformed.crops);
+    setGeneratedPlan({
+      bed1Zones: transformed.bed1Zones,
+      bed2Zones: transformed.bed2Zones,
+      stages: transformed.stages,
+      permanentHerbs: transformed.permanentHerbs,
+      vizCrops: transformed.vizCrops,
+      harvestBuffer: transformed.harvestBuffer,
+      cropIdToVizKey: transformed.cropIdToVizKey,
+      gardenMeta: transformed.gardenMeta,
+    });
+    setTab('Beds');
+  }
 
   function handleSave(event) {
     setEvents(prev => {
@@ -52,14 +70,22 @@ export default function App() {
   function handleReset() {
     if (!confirm('Reset to the original garden plan? All changes will be lost.')) return;
     setEvents(EVENTS);
+    setCrops(CROPS);
+    setGeneratedPlan(null);
+    setTab('Setup');
   }
+
+  const meta = generatedPlan?.gardenMeta;
+  const subtitle = meta
+    ? `Zone ${meta.zone} · ${meta.bedCount} raised bed${meta.bedCount !== 1 ? 's' : ''} · ${meta.year}`
+    : `Zone 7b · 2 raised beds · ${year}`;
 
   return (
     <div className="min-h-screen bg-white">
       <header className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">Garden Planner</h1>
-          <p className="text-xs text-gray-400 mt-0.5">Zone 7b · 2 raised beds · {year}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>
         </div>
         <button
           onClick={handleReset}
@@ -88,6 +114,9 @@ export default function App() {
       </nav>
 
       <main className="px-6 py-6">
+        {tab === 'Setup' && (
+          <SetupPage onPlanGenerated={handlePlanGenerated} />
+        )}
         {tab === 'Timeline' && (
           <div>
             <p className="text-sm text-gray-500 mb-4">
@@ -108,7 +137,20 @@ export default function App() {
         {tab === 'Export' && (
           <ExportPanel events={events} crops={crops} />
         )}
-        {tab === 'Beds' && <BedVisualizer events={events} crops={crops} />}
+        {tab === 'Beds' && (
+          <BedVisualizer
+            events={events}
+            crops={crops}
+            stages={generatedPlan?.stages}
+            bed1Zones={generatedPlan?.bed1Zones}
+            bed2Zones={generatedPlan?.bed2Zones}
+            vizCrops={generatedPlan?.vizCrops}
+            permanentHerbs={generatedPlan?.permanentHerbs}
+            cropIdToVizKey={generatedPlan?.cropIdToVizKey}
+            harvestBuffer={generatedPlan?.harvestBuffer}
+            gardenMeta={generatedPlan?.gardenMeta}
+          />
+        )}
       </main>
 
       {editing !== null && (

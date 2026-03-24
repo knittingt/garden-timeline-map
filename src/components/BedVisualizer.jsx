@@ -7,12 +7,29 @@ import styles from './BedVisualizer.module.css';
 const SEASON_LABELS = { year: 'Year-Round', spring: 'Spring', summer: 'Summer', fall: 'Fall' };
 const BADGE_CLASS = { year: styles.badgeYear, spring: styles.badgeSpring, summer: styles.badgeSummer, fall: styles.badgeFall };
 
-export default function BedVisualizer({ events, crops }) {
+export default function BedVisualizer({
+  events,
+  crops,
+  stages = STAGES,
+  bed1Zones = BED1_ZONES,
+  bed2Zones = BED2_ZONES,
+  vizCrops = VIZ_CROPS,
+  permanentHerbs,
+  cropIdToVizKey,
+  harvestBuffer,
+  gardenMeta,
+}) {
   const [currentStage, setCurrentStage] = useState(0);
   const [prevStage, setPrevStage] = useState(-1);
 
+  // Reset to stage 0 when stages change (new plan generated)
+  useEffect(() => {
+    setCurrentStage(0);
+    setPrevStage(-1);
+  }, [stages]);
+
   function goTo(idx) {
-    if (idx < 0 || idx >= STAGES.length) return;
+    if (idx < 0 || idx >= stages.length) return;
     setPrevStage(currentStage);
     setCurrentStage(idx);
   }
@@ -24,15 +41,29 @@ export default function BedVisualizer({ events, crops }) {
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [currentStage]);
+  }, [currentStage, stages]);
 
-  const stage = STAGES[currentStage];
-  const prevStageData = prevStage >= 0 ? STAGES[prevStage] : null;
+  const stage = stages[currentStage];
+  const prevStageData = prevStage >= 0 ? stages[prevStage] : null;
 
-  const { bed1, bed2 } = computeBedsAtDate(events, crops, stage.stageDate);
+  const vizOptions = { bed1Zones, bed2Zones, permanentHerbs, cropIdToVizKey, harvestBuffer };
+  const { bed1, bed2 } = computeBedsAtDate(events, crops, stage.stageDate, vizOptions);
   const prev = prevStageData
-    ? computeBedsAtDate(events, crops, prevStageData.stageDate)
+    ? computeBedsAtDate(events, crops, prevStageData.stageDate, vizOptions)
     : null;
+
+  const title = gardenMeta?.description ?? '2026 4236 Garden';
+  const subtitle = gardenMeta
+    ? `Zone ${gardenMeta.zone} · ${gardenMeta.bedCount} raised bed${gardenMeta.bedCount !== 1 ? 's' : ''} · ${gardenMeta.year}`
+    : 'Zone 7b · Two Raised Beds, 33″ × 108″ · NE Orientation';
+
+  const allBedZones = [bed1Zones, bed2Zones].filter(Boolean);
+  const allBedData = [bed1, bed2];
+
+  const sunTags = gardenMeta?.bedSunTags ?? [
+    'Full sun all day',
+    'SW tree (PM shade on south end)',
+  ];
 
   return (
     <div className={styles.vizRoot}>
@@ -40,8 +71,8 @@ export default function BedVisualizer({ events, crops }) {
       <header className={styles.header}>
         <div className={styles.headerSpacer} />
         <div className={styles.headerCenter}>
-          <h1 className={styles.title}>2026 4236 Garden</h1>
-          <div className={styles.subtitle}>Zone 7b · Two Raised Beds, 33″ × 108″ · NE Orientation</div>
+          <h1 className={styles.title}>{title}</h1>
+          <div className={styles.subtitle}>{subtitle}</div>
           <div className={`${styles.seasonBadge} ${BADGE_CLASS[stage.season]}`}>
             {SEASON_LABELS[stage.season] || stage.season}
           </div>
@@ -80,14 +111,14 @@ export default function BedVisualizer({ events, crops }) {
         <button
           className={styles.navBtn}
           onClick={() => goTo(currentStage + 1)}
-          disabled={currentStage === STAGES.length - 1}
+          disabled={currentStage === stages.length - 1}
           title="Next stage (→)"
         >→</button>
       </div>
 
       {/* Dots */}
       <div className={styles.dotsRow}>
-        {STAGES.map((s, i) => (
+        {stages.map((s, i) => (
           <span
             key={i}
             className={`${styles.stageDot} ${i === currentStage ? styles.active : ''}`}
@@ -101,27 +132,24 @@ export default function BedVisualizer({ events, crops }) {
 
       {/* Beds */}
       <div className={styles.bedsOuter}>
-        <BedPanel
-          bedNum={2}
-          zones={BED2_ZONES}
-          bedData={bed2}
-          prevBedData={prev?.bed2}
-          sunTag="Full sun all day"
-        />
-        <BedPanel
-          bedNum={1}
-          zones={BED1_ZONES}
-          bedData={bed1}
-          prevBedData={prev?.bed1}
-          sunTag="SW tree (PM shade on south end)"
-        />
+        {allBedZones.map((zones, i) => (
+          <BedPanel
+            key={i}
+            bedNum={i + 1}
+            zones={zones}
+            bedData={allBedData[i] ?? {}}
+            prevBedData={prev ? [prev.bed1, prev.bed2][i] : null}
+            sunTag={sunTags[i] ?? ''}
+            vizCrops={vizCrops}
+          />
+        ))}
       </div>
 
       {/* Legend */}
       <div className={styles.legend}>
         <div className={styles.legendTitle}>Crop Legend</div>
         <div className={styles.legendGrid}>
-          {Object.entries(VIZ_CROPS).map(([key, c]) => (
+          {Object.entries(vizCrops).map(([key, c]) => (
             <div key={key} className={styles.legendItem}>
               <div className={styles.legendSwatch} style={{ background: c.color }} />
               <span>{c.name}</span>
