@@ -101,7 +101,7 @@ Only set "complete": true after ALL THREE phases are done:
     const content = data.content?.[0]?.text ?? '';
 
     // Strip markdown fences if present
-    const cleaned = content.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    const cleaned = content.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
 
     let parsed;
     try {
