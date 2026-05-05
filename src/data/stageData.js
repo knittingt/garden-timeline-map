@@ -3,12 +3,12 @@
 // bed1/bed2 content is now computed dynamically via stageUtils.computeBedsAtDate.
 
 export const VIZ_CROPS = {
-  thyme:    { name: 'Thyme',            color: '#9b8ea0', note: 'Permanent perennial. NE corner of Bed 1 trellis zone. Low-growing (6–12"). Attracts pollinators. Hardy to Zone 5.' },
+  thyme:    { name: 'Thyme',            color: '#9b8ea0', note: 'Removed May 5, 2026 from Bed 1 trellis zone.' },
   rosemary: { name: 'Rosemary',         color: '#607b99', note: 'Permanent perennial. Bed 2 Strip 2 west side. Trim to footprint each spring. Prevents shading of chard and melons. Mulch base if temps drop below 10°F.' },
   oregano:  { name: 'Oregano',          color: '#a07850', note: 'Permanent perennial. NW corner of Bed 2. Trim firmly to 1 sq ft each spring. Flowers are excellent pollinator magnets.' },
   kale:     { name: 'Kale',             color: '#4a7c59', note: 'Cut-and-come-again. 2 succession rounds per season. Bolt-resistant. Goes at north end — tall leaves shade nothing south.' },
   chard:    { name: 'Swiss Chard',      color: '#c8553d', note: 'Cut-and-come-again. Very long producing season. 2 succession rounds. Tolerates light frost.' },
-  snaps:    { name: 'Sugar Snaps',      color: '#8db580', note: '6 ft variety — must use trellis. S1: Bed 1 trellis (hard pull deadline May 10 for cucumbers). S2: Bed 2 new trellis.' },
+  snaps:    { name: 'Sugar Snaps',      color: '#8db580', note: 'Bed 1 trellis zone, SW side in a tall cage — positioned to leave trellis clear for cucumbers. Planted ~Apr 14.' },
   bokchoy:  { name: 'Bok Choy',         color: '#6b9b7e', note: '4 succession rounds. Partial PM shade in Bed 1 south slows bolting. Sow next round at first bolt signal.' },
   cilantro: { name: 'Cilantro',         color: '#b5c99a', note: '4 succession rounds. Bolts fast in warmth. Benefits greatly from partial shade. Dense broadcast sowing.' },
   dill:     { name: 'Dill',             color: '#d4e09b', note: '4 succession rounds. Bolts moderately fast. Flowering dill attracts pollinators and beneficial insects for melons.' },
@@ -17,8 +17,8 @@ export const VIZ_CROPS = {
   roma:     { name: 'Roma Tomato',      color: '#c0392b', note: 'Semi-determinate. Prune to 1–2 leaders. Stake and tie to Bed 2 north trellis. Relatively self-limiting.' },
   zucchini: { name: 'Zucchini',         color: '#5d8233', note: '1 plant only — will massively overproduce. Leaves will sprawl over south edge. Remove aging lower leaves for airflow.' },
   melon:    { name: 'Midget Melon',     color: '#d4a843', note: '2× Minnesota Midget. Train vertically on stakes/string. Support developing fruits in mesh bags. Hand-pollinate if needed.' },
-  chili:    { name: 'Thai Chili',       color: '#c62a2a', note: '1× plant. Heat lover. Low maintenance once established. Among the last plants producing in fall.' },
-  jalapeno: { name: 'Jalapeño',         color: '#2d6a2d', note: '1× plant. Tolerates the SW tree\'s partial afternoon shade well. Heat lover. Productive through late fall.' },
+  fresno:   { name: 'Fresno Chili',     color: '#e85d04', note: '1× plant. Bed 1 Strip C. Planted May 5. Fruity heat — hotter than jalapeño when red. Productive through fall.' },
+  basil:    { name: 'Basil',            color: '#84cc16', note: '1× plant. Bed 2 Strip 2. Planted May 5. Pinch flowers to extend harvest. Good companion for nearby tomatoes.' },
 };
 
 export const BED1_ZONES = [
@@ -38,7 +38,7 @@ export const BED2_ZONES = [
 // Permanent herbs that appear in every stage
 export const PERMANENT_HERBS = {
   bed1: {
-    trellis: [ { crop: 'thyme',    label: 'Thyme',    permanent: true } ],
+    trellis: [],
   },
   bed2: {
     strip1: [ { crop: 'oregano',  label: 'Oregano',  permanent: true } ],
@@ -52,7 +52,7 @@ export const CROP_ID_TO_VIZ_KEY = {
   'bok-choy':     'bokchoy',
   'tomato-roma':  'roma',
   'tomato-cherry':'cherry',
-  'thai-chili':   'chili',
+  'fresno-chili': 'fresno',
 };
 
 // Days after daysToMaturity that a crop remains in the bed (harvest window)
@@ -68,8 +68,8 @@ export const HARVEST_BUFFER = {
   'melon':        60,
   'tomato-roma':  150,
   'tomato-cherry':150,
-  'thai-chili':   150,
-  'jalapeno':     150,
+  'fresno-chili': 150,
+  'basil':        120,
 };
 
 export const STAGES = [

@@ -13,8 +13,8 @@ export const CROPS = [
   { id: 'tomato-cherry','name': 'Cherry Tomato',    daysToMaturity: 65, color: '#f87171' },
   { id: 'zucchini',    name: 'Zucchini',            daysToMaturity: 50, color: '#f59e0b' },
   { id: 'melon',       name: 'MN Midget Melon',     daysToMaturity: 75, color: '#fbbf24' },
-  { id: 'thai-chili',  name: 'Thai Chili',          daysToMaturity: 80, color: '#fb923c' },
-  { id: 'jalapeno',    name: 'Jalapeño',            daysToMaturity: 75, color: '#f97316' },
+  { id: 'fresno-chili',name: 'Fresno Chili',        daysToMaturity: 75, color: '#e85d04' },
+  { id: 'basil',       name: 'Basil',               daysToMaturity: 28, color: '#84cc16' },
 ];
 
 // Helper
@@ -28,11 +28,9 @@ export const EVENTS = [
   // S1 Mar 14
   { id: 's1-kale',       cropId: 'kale',        bed: 1, strip: 'A', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-kale' },
   { id: 's1-chard',      cropId: 'chard',       bed: 1, strip: 'B', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-chard' },
-  { id: 's1-snappeas',   cropId: 'snappeas',    bed: 1, strip: 'B', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-snappeas' },
+  { id: 's1-snappeas',   cropId: 'snappeas',    bed: 1, strip: 'trellis', sowDate: iso(4,14), season: 'spring', successionRound: 1, groupId: 'g-snappeas' },
   { id: 's1-bokchoy',    cropId: 'bok-choy',    bed: 1, strip: 'C', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-bokchoy' },
-  { id: 's1-kale-b2',    cropId: 'kale',        bed: 2, strip: '1', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-kale-b2' },
   { id: 's1-chard-b2',   cropId: 'chard',       bed: 2, strip: '2', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-chard-b2' },
-  { id: 's1-bokchoy-b2', cropId: 'bok-choy',    bed: 2, strip: '3', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-bokchoy-b2' },
 
   // S2 Mar 28
   { id: 's2-cilantro',   cropId: 'cilantro',    bed: 1, strip: 'C', sowDate: iso(3,28), season: 'spring', successionRound: 2, groupId: 'g-cilantro' },
@@ -46,25 +44,22 @@ export const EVENTS = [
   { id: 's3-chard',      cropId: 'chard',       bed: 1, strip: 'B', sowDate: iso(4,11), season: 'spring', successionRound: 2, groupId: 'g-chard' },
   { id: 's3-cilantro2',  cropId: 'cilantro',    bed: 1, strip: 'C', sowDate: iso(4,11), season: 'spring', successionRound: 3, groupId: 'g-cilantro' },
   { id: 's3-dill2',      cropId: 'dill',        bed: 1, strip: 'C', sowDate: iso(4,11), season: 'spring', successionRound: 3, groupId: 'g-dill' },
-  { id: 's3-bokchoy3',   cropId: 'bok-choy',    bed: 2, strip: '3', sowDate: iso(4,11), season: 'spring', successionRound: 3, groupId: 'g-bokchoy-b2' },
 
   // S4 Apr 25
   { id: 's4-cilantro',   cropId: 'cilantro',    bed: 1, strip: 'C', sowDate: iso(4,25), season: 'spring', successionRound: 4, groupId: 'g-cilantro' },
   { id: 's4-dill',       cropId: 'dill',        bed: 1, strip: 'C', sowDate: iso(4,25), season: 'spring', successionRound: 4, groupId: 'g-dill' },
-  { id: 's4-bokchoy',    cropId: 'bok-choy',    bed: 2, strip: '3', sowDate: iso(4,25), season: 'spring', successionRound: 4, groupId: 'g-bokchoy-b2' },
 
   // Cucumbers May 12
-  { id: 'cucumber1',     cropId: 'cucumber',    bed: 1, strip: 'trellis', sowDate: iso(5,12), season: 'spring', successionRound: 1, groupId: 'g-cucumber' },
+  { id: 'cucumber1',     cropId: 'cucumber',    bed: 1, strip: 'trellis', sowDate: iso(5,5),  season: 'spring', successionRound: 1, groupId: 'g-cucumber' },
 
   // ── SUMMER ──────────────────────────────────────────────────────
-  { id: 'sum-roma',      cropId: 'tomato-roma',  bed: 2, strip: '1', sowDate: iso(5,15), season: 'summer', successionRound: 1, groupId: 'g-roma' },
-  { id: 'sum-cherry',    cropId: 'tomato-cherry',bed: 1, strip: 'A', sowDate: iso(5,15), season: 'summer', successionRound: 1, groupId: 'g-cherry' },
+  { id: 'sum-roma',      cropId: 'tomato-roma',  bed: 2, strip: '1', sowDate: iso(5,5),  season: 'summer', successionRound: 1, groupId: 'g-roma' },
+  { id: 'sum-cherry',    cropId: 'tomato-cherry',bed: 1, strip: 'trellis', sowDate: iso(5,5),  season: 'summer', successionRound: 1, groupId: 'g-cherry' },
+  { id: 'sum-fresno',    cropId: 'fresno-chili', bed: 1, strip: 'C', sowDate: iso(5,5),  season: 'summer', successionRound: 1, groupId: 'g-fresno' },
   { id: 'sum-zucchini',  cropId: 'zucchini',     bed: 2, strip: '4', sowDate: iso(5,15), season: 'summer', successionRound: 1, groupId: 'g-zucchini' },
   { id: 'sum-melon1',    cropId: 'melon',        bed: 2, strip: '2', sowDate: iso(5,15), season: 'summer', successionRound: 1, groupId: 'g-melon' },
   { id: 'sum-melon2',    cropId: 'melon',        bed: 2, strip: '3', sowDate: iso(5,15), season: 'summer', successionRound: 2, groupId: 'g-melon' },
-  { id: 'sum-thai1',     cropId: 'thai-chili',   bed: 1, strip: 'B', sowDate: iso(5,15), season: 'summer', successionRound: 1, groupId: 'g-thai' },
-  { id: 'sum-thai2',     cropId: 'thai-chili',   bed: 1, strip: 'B', sowDate: iso(5,15), season: 'summer', successionRound: 2, groupId: 'g-thai' },
-  { id: 'sum-jalapeno',  cropId: 'jalapeno',     bed: 1, strip: 'C', sowDate: iso(5,15), season: 'summer', successionRound: 1, groupId: 'g-jalapeno' },
+  { id: 'sum-basil',     cropId: 'basil',        bed: 2, strip: '2', sowDate: iso(5,5),  season: 'summer', successionRound: 1, groupId: 'g-basil' },
 
   // ── FALL ────────────────────────────────────────────────────────
   // F1 Jul 31
