@@ -28,7 +28,7 @@ export const EVENTS = [
   // S1 Mar 14
   { id: 's1-kale',       cropId: 'kale',        bed: 1, strip: 'A', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-kale' },
   { id: 's1-chard',      cropId: 'chard',       bed: 1, strip: 'B', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-chard' },
-  { id: 's1-snappeas',   cropId: 'snappeas',    bed: 1, strip: 'trellis', sowDate: iso(4,14), season: 'spring', successionRound: 1, groupId: 'g-snappeas' },
+  { id: 's1-snappeas',   cropId: 'snappeas',    bed: 1, strip: 'A',       sowDate: iso(4,14), season: 'spring', successionRound: 1, groupId: 'g-snappeas' },
   { id: 's1-bokchoy',    cropId: 'bok-choy',    bed: 1, strip: 'C', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-bokchoy' },
   { id: 's1-chard-b2',   cropId: 'chard',       bed: 2, strip: '2', sowDate: iso(3,14), season: 'spring', successionRound: 1, groupId: 'g-chard-b2' },
 
